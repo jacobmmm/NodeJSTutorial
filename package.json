@@ -1,0 +1,16 @@
+{
+  "name": "nodejstutorial",
+  "version": "1.0.0",
+  "description": "An api package for cars",
+  "main": "base.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "node --env-file=.env base.js",
+    "dev": "node --watch base.js"
+  },
+  "author": "Jacob Mammen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

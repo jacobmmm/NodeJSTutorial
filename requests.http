@@ -1,0 +1,106 @@
+### Example requests - open in VS Code with the "REST Client" extension and click "Send Request".
+@base = http://localhost:3000/api
+
+### API index
+GET {{base}}
+
+### ---------- Manufacturers ----------
+
+GET {{base}}/manufacturers
+
+### Filter
+GET {{base}}/manufacturers?country=Germany&prestige=true
+
+### One manufacturer
+GET {{base}}/manufacturers/1
+
+### All stock for a brand
+GET {{base}}/manufacturers/1/cars
+
+### Create
+POST {{base}}/manufacturers
+Content-Type: application/json
+
+{ "name": "Kia", "country": "South Korea", "foundedYear": 1944, "website": "https://www.kia.com" }
+
+### Partial update
+PATCH {{base}}/manufacturers/11
+Content-Type: application/json
+
+{ "foundedYear": 1945 }
+
+### Delete (409 if cars still reference it)
+DELETE {{base}}/manufacturers/11
+
+### ---------- Dealers ----------
+
+GET {{base}}/dealers?location=Ringwood
+
+### Dealers authorised for BMW
+GET {{base}}/dealers?manufacturerId=8
+
+###
+GET {{base}}/dealers/1
+
+### A dealer's stock
+GET {{base}}/dealers/1/cars?sort=price
+
+### Create
+POST {{base}}/dealers
+Content-Type: application/json
+
+{
+  "name": "Ringwood Korean Cars",
+  "location": "Ringwood",
+  "phone": "03 9000 0010",
+  "email": "sales@ringwoodkorean.example",
+  "manufacturerIds": [3],
+  "tradingHours": "Mon-Sat 9am-5pm"
+}
+
+### ---------- Cars ----------
+
+### Filter, sort, paginate
+GET {{base}}/cars?condition=used&maxPrice=40000&sort=-year&page=1&limit=5
+
+### Search, filter by site, embed related objects
+GET {{base}}/cars?q=rav&location=Ringwood&expand=manufacturer,dealer
+
+###
+GET {{base}}/cars/1?expand=dealer
+
+### Create
+POST {{base}}/cars
+Content-Type: application/json
+
+{
+  "manufacturerId": 1,
+  "dealerId": 1,
+  "model": "Corolla",
+  "variant": "Ascent Sport",
+  "year": 2025,
+  "price": 31990,
+  "condition": "new",
+  "bodyType": "Hatchback",
+  "transmission": "Automatic",
+  "fuelType": "Hybrid",
+  "colour": "Red"
+}
+
+### Mark as sold
+PATCH {{base}}/cars/1
+Content-Type: application/json
+
+{ "status": "sold" }
+
+### Business rule violation (422): Eastside Motors can't sell a NEW BMW
+POST {{base}}/cars
+Content-Type: application/json
+
+{
+  "manufacturerId": 8, "dealerId": 1, "model": "X3", "year": 2025, "price": 89000,
+  "condition": "new", "bodyType": "SUV", "transmission": "Automatic", "fuelType": "Petrol"
+}
+
+### Delete
+DELETE {{base}}/cars/1
